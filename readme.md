@@ -22,3 +22,24 @@ From the above dataset we have used "accepted_2007_to_2018Q4.csv"
 since it is big dataset we have not included in this git repo.
 Therefore adjust the path as per your need.
 
+
+configReader.py : 
+It helps to read all the configs specific to diff environment as specified to user. eg : "LOCAL"
+
+utils.py : 
+it will help us in creating the spark-session for all the files based on the env.
+
+dataReader.py : 
+It will contain all the DF reading snippets
+
+dataManipulation.py : 
+All the transformation logic will be written here 
+
+dataWriter.py :
+It will help writing data back to the disk
+
+Above mentioned are all the module which we'll be using for writing aur pyspark code.
+I have mentioned each and every files name in sequential order in which they are supposed to be executed as an individual pipeline one after another.
+
+01_data_seggregation :
+In this we have observerd the data and seggregated it in 4 major stream which we'll use for further processing.
