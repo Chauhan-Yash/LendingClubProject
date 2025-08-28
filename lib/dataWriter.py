@@ -54,6 +54,11 @@ def rawLoansDefaulterDataWriter(spark,tableName):
         .format("csv")\
         .mode("overwrite")\
         .save("../data/raw/loans_defaulters_csv")
+
+def cleanedCustomersDfWriter(df):
+    df.write.format("parquet")\
+        .mode("overwrite")\
+        .save("../data/cleaned/customers_parquet")
     
 
         
