@@ -75,6 +75,49 @@ def cleanLoansDf(df) :
     
     return loans_purpose_modified
 
+def cleanLoansRepaymentsDf(df):
+    # insert a new column named as ingestion date(current time)
+    loans_repay_df_ingestd = df.withColumn("ingest_date", current_timestamp())
+
+    # drop rows having these columns as nulls
+    columns_to_check = [
+        "total_principal_received", "total_interest_received", "total_late_fee_received", 
+        "total_payment_received", "last_payment_amount"
+    ]
+    loans_repay_filtered_df = loans_repay_df_ingestd.na.drop(subset=columns_to_check)
+
+
+    # check total_payment_received column
+    loans_payments_fixed_df = loans_repay_filtered_df.withColumn(
+        "total_payment_received",
+        when(
+            (col("total_principal_received") != 0.0) &
+            (col("total_payment_received") == 0.0),
+            col("total_principal_received") + col("total_interest_received") + col("total_late_fee_received")
+        ).otherwise(col("total_payment_received"))
+    )
+
+    # filter out rows having total_payment_received != 0.0
+    loans_payments_fixed2_df = loans_payments_fixed_df.filter("total_payment_received != 0.0")
+
+    loans_payments_ldate_fixed_df = loans_payments_fixed2_df.withColumn(
+        "last_payment_date",
+        when(
+            (col("last_payment_date") == '0.0'),
+            None
+            ).otherwise(col("last_payment_date"))
+    )
+
+    loans_payments_ndate_fixed_df = loans_payments_ldate_fixed_df.withColumn(
+        "next_payment_date",
+        when(
+            (col("next_payment_date") == '0.0'),
+            None
+            ).otherwise(col("next_payment_date"))
+    )
+
+    return loans_payments_ndate_fixed_df
+
 
 
 

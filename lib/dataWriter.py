@@ -64,6 +64,11 @@ def cleanedLoansDfWriter(df):
     df.write.format("parquet")\
         .mode("overwrite")\
         .save("../data/cleaned/loans_parquet")
+
+def cleanedLoansRepaymentsDfWriter(df):
+    df.write.format("parquet")\
+        .mode("overwrite")\
+        .save("../data/cleaned/loans_repayments_parquet")
     
 
         
