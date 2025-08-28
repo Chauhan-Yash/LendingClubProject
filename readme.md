@@ -43,3 +43,20 @@ I have mentioned each and every files name in sequential order in which they are
 
 01_data_seggregation :
 In this we have observerd the data and seggregated it in 4 major stream which we'll use for further processing.
+
+02_cleaning_customers_data : 
+# create a dataframe with proper datatypes
+# Rename a few columns
+# insert a new column named as ingestion date(current time)
+# Remove complete duplicate rows
+#  Remove the rows where annual_income is null
+# convert emp_length to integer
+# we need to replace all the nulls in emp_length column with average of this column
+# Clean the address_state(it should be 2 characters only),replace all others with NA
+
+03_cleaning_loans_data : 
+# create a dataframe with proper datatypes and names
+# insert a new column named as ingestion date(current time)
+# Dropping the rows which has null values in the mentioned columns
+# convert loan_term_months to integer
+# Clean the loans_purpose column
