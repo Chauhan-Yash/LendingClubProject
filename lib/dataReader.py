@@ -32,3 +32,14 @@ def rawLoansReader(spark):
         .schema(loans_schema)\
         .option("header","true")\
         .load(filePath)
+
+def rawLoansRepaymentsReader(spark):
+    loans_repay_schema = """
+        loan_id string, total_principal_received float, total_interest_received float, total_late_fee_received float,
+        total_payment_received float, last_payment_amount float, last_payment_date string, next_payment_date string
+    """
+    filePath = "../data/raw/loans_repayments_csv"
+    return spark.read.format("csv")\
+        .schema(loans_repay_schema)\
+        .option("header","true")\
+        .load(filePath)
