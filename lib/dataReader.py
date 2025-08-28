@@ -17,6 +17,18 @@ def rawCustomerReader(spark):
     """
     filePath = "../data/raw/customers_data_csv"
     return spark.read.format("csv")\
-        .option("inferSchema","true")\
+        .schema(customer_schema)\
+        .option("header","true")\
+        .load(filePath)
+
+def rawLoansReader(spark):
+    loans_schema = """
+        loan_id string, member_id string, loan_amount float, funded_amount float, loan_term_months string,
+        interest_rate float, monthly_installment float, issue_date string, loan_status string, loan_purpose string,
+        loan_title string
+    """
+    filePath = "../data/raw/loans_data_csv"
+    return spark.read.format("csv")\
+        .schema(loans_schema)\
         .option("header","true")\
         .load(filePath)

@@ -44,6 +44,37 @@ def cleanCustomerDf(df):
     
     return customers_state_cleaned
 
+def cleanLoansDf(df) :
+    # insert a new column named as ingestion date(current time)
+    loans_df_ingestd = df.withColumn("ingest_date", current_timestamp())
+
+    # Dropping the rows which has null values in the mentioned columns
+    columns_to_check = [
+        "loan_amount", "funded_amount", "loan_term_months", "interest_rate", "monthly_installment",
+        "issue_date", "loan_status", "loan_purpose"
+    ]
+    loans_filtered_df = loans_df_ingestd.na.drop(subset=columns_to_check)
+
+    # convert loan_term_months to integer
+    loans_term_modified_df = loans_filtered_df\
+        .withColumn("loan_term_months", (regexp_replace(col("loan_term_months"), " months", "") \
+            .cast("int") / 12) \
+            .cast("int")) \
+        .withColumnRenamed("loan_term_months","loan_term_years")
+    
+    # Clean the loans_purpose column
+    loan_purpose_lookup = [
+        "debt_consolidation", "credit_card", "home_improvement", "other", "major_purchase", "medical",
+        "small_business", "car", "vacation", "moving", "house", "wedding", "renewable_energy", "educational"
+    ]
+    loans_purpose_modified = loans_term_modified_df\
+        .withColumn(
+            "loan_purpose", 
+            when(col("loan_purpose").isin(loan_purpose_lookup), col("loan_purpose")).otherwise("other")
+            )
+    
+    return loans_purpose_modified
+
 
 
 
