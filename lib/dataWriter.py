@@ -70,5 +70,13 @@ def cleanedLoansRepaymentsDfWriter(df):
         .mode("overwrite")\
         .save("../data/cleaned/loans_repayments_parquet")
     
+def cleanedLoansDefaultersDfWriter(loans_def_delinq_df,loans_def_records_enq_df):
+    loans_def_delinq_df.write.format("parquet")\
+        .mode("overwrite")\
+        .save("../data/cleaned/loans_defaulter_delinq_parquet")
+    loans_def_records_enq_df.write.format("parquet")\
+        .mode("overwrite")\
+        .save("../data/cleaned/loans_defaulters_records_enq_parquet")
+    
 
         

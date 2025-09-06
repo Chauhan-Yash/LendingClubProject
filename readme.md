@@ -66,3 +66,9 @@ In this we have observerd the data and seggregated it in 4 major stream which we
     drop rows having these columns as nulls
     check total_payment_received column
     filter out rows having total_payment_received != 0.0
+
+# 05_cleaning_loans_defaulter_data:
+    casted delinq_2yrs to integer, and filled NA with 0
+    Make two dfs out of it 
+    1 for defaulters_delinq
+    1 for defaulters_recored_enquiry

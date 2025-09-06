@@ -118,7 +118,24 @@ def cleanLoansRepaymentsDf(df):
 
     return loans_payments_ndate_fixed_df
 
+def cleanLoansDefaultersDf(spark, df):
+    loans_def_processed_df = df\
+        .withColumn("delinq_2yrs", col("delinq_2yrs").cast("integer"))\
+        .fillna(0, subset = ["delinq_2yrs"])
 
+    loans_def_processed_df.createOrReplaceTempView("loan_defaulters")
+
+    loans_def_delinq_df = spark.sql(
+        """select member_id,delinq_2yrs, delinq_amnt, int(mths_since_last_delinq)
+          from loan_defaulters where delinq_2yrs > 0 or mths_since_last_delinq > 0"""
+    )
+
+    loans_def_records_enq_df = spark.sql(
+        """select member_id from loan_defaulters 
+        where pub_rec > 0.0 or pub_rec_bankruptcies > 0.0 or inq_last_6mths > 0.0"""
+    )
+
+    return loans_def_delinq_df,loans_def_records_enq_df
 
 
 
