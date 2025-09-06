@@ -43,3 +43,14 @@ def rawLoansRepaymentsReader(spark):
         .schema(loans_repay_schema)\
         .option("header","true")\
         .load(filePath)
+
+def rawLoansDefaulterReader(spark):
+    loan_defaulters_schema = """
+        member_id string, delinq_2yrs float, delinq_amnt float, pub_rec float, pub_rec_bankruptcies float,
+        inq_last_6mths float, total_rec_late_fee float, mths_since_last_delinq float, mths_since_last_record float"""
+    
+    filePath = "../data/raw/loans_defaulters_csv"
+    return spark.read.format("csv")\
+        .schema(loan_defaulters_schema)\
+        .option("header","true")\
+        .load(filePath)
