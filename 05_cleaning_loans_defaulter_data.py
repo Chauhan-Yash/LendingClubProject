@@ -17,10 +17,11 @@ if __name__ == "__main__":
 
     loans_def_raw_df = dataReader.rawLoansDefaulterReader(spark)
 
-    loans_def_delinq_df,loans_def_records_enq_df = dataManipulation.cleanLoansDefaultersDf(spark,loans_def_raw_df)
+    loans_def_delinq_df,loans_def_records_enq_df,loans_def_detail_records_enq_df = dataManipulation\
+        .cleanLoansDefaultersDf(spark,loans_def_raw_df)
 
 
-    dataWriter.cleanedLoansDefaultersDfWriter(loans_def_delinq_df,loans_def_records_enq_df)
+    dataWriter.cleanedLoansDefaultersDfWriter(loans_def_delinq_df,loans_def_records_enq_df,loans_def_detail_records_enq_df)
 
     spark.stop()
     print("Stopped Spark Session")
