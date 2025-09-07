@@ -135,7 +135,23 @@ def cleanLoansDefaultersDf(spark, df):
         where pub_rec > 0.0 or pub_rec_bankruptcies > 0.0 or inq_last_6mths > 0.0"""
     )
 
-    return loans_def_delinq_df,loans_def_records_enq_df
+    loans_def_p_pub_rec_df = loans_def_processed_df\
+        .withColumn("pub_rec", col("pub_rec").cast("integer")).fillna(0, subset = ["pub_rec"])
+    
+    loans_def_p_pub_rec_bankruptcies_df = loans_def_p_pub_rec_df\
+        .withColumn("pub_rec_bankruptcies", col("pub_rec_bankruptcies").cast("integer"))\
+            .fillna(0, subset = ["pub_rec_bankruptcies"])
+    
+    loans_def_p_inq_last_6mths_df = loans_def_p_pub_rec_bankruptcies_df\
+        .withColumn("inq_last_6mths", col("inq_last_6mths").cast("integer")).fillna(0, subset = ["inq_last_6mths"])
+    
+    loans_def_p_inq_last_6mths_df.createOrReplaceTempView("loan_defaulters")
+
+    loans_def_detail_records_enq_df = spark.sql(
+        "select member_id, pub_rec, pub_rec_bankruptcies, inq_last_6mths from loan_defaulters"
+    )
+
+    return loans_def_delinq_df,loans_def_records_enq_df,loans_def_detail_records_enq_df
 
 
 
