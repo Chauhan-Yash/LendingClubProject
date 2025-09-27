@@ -153,5 +153,68 @@ def cleanLoansDefaultersDf(spark, df):
 
     return loans_def_delinq_df,loans_def_records_enq_df,loans_def_detail_records_enq_df
 
+def extract_bad_data(spark,table):
+    return spark.sql(f"""
+        select member_id from (
+            select member_id , count(*) as total from {table}
+            group by member_id having total > 1
+        )
+    """)
+
+def remove_bad_data(spark,bad_table, table_to_clean):
+    return spark.sql(
+        f"""select * from {table_to_clean}
+            where member_id not in(
+                select member_id from {bad_table}
+            )
+        """)
+
+def customers_loan_v_merge(spark,customers,loans,loans_repayments,loans_defaulters_delinq,loans_defaulters_detail_rec_enq):
+    return spark.sql(
+        f"""
+            select
+            l.loan_id,
+            c.member_id,
+            c.emp_title,
+            c.emp_length,
+            c.home_ownership,
+            c.annual_income,
+            c.address_state,
+            c.address_zipcode,
+            c.address_country,
+            c.grade,
+            c.sub_grade,
+            c.verification_status,
+            c.total_high_credit_limit,
+            c.application_type,
+            c.join_annual_income,
+            c.verification_status_joint,
+            l.loan_amount,
+            l.funded_amount,
+            l.loan_term_years,
+            l.interest_rate,
+            l.monthly_installment,
+            l.issue_date,
+            l.loan_status,
+            l.loan_purpose,
+            r.total_principal_received,
+            r.total_interest_received,
+            r.total_late_fee_received,
+            r.last_payment_date,
+            r.next_payment_date,
+            d.delinq_2yrs,
+            d.delinq_amnt,
+            d.mths_since_last_delinq,
+            e.pub_rec,
+            e.pub_rec_bankruptcies,
+            e.inq_last_6mths
+
+            FROM {customers} c
+            LEFT JOIN {loans} l on c.member_id = l.member_id
+            LEFT JOIN {loans_repayments} r ON l.loan_id = r.loan_id
+            LEFT JOIN {loans_defaulters_delinq} d ON c.member_id = d.member_id
+            LEFT JOIN {loans_defaulters_detail_rec_enq} e ON c.member_id = e.member_id
+        """
+    )
 
 
