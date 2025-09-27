@@ -54,3 +54,24 @@ def rawLoansDefaulterReader(spark):
         .schema(loan_defaulters_schema)\
         .option("header","true")\
         .load(filePath)
+
+def cleanedCustomerReader(spark):
+    filePath = "../data/cleaned/customers_parquet"
+    return spark.read.format("parquet").load(filePath)
+
+def cleanedLoansReader(spark):
+    filePath = "../data/cleaned/loans_parquet"
+    return spark.read.format("parquet").load(filePath)
+
+def cleanedLoansRepaymentsReader(spark):
+    filePath = "../data/cleaned/loans_repayments_parquet"
+    return spark.read.format("parquet").load(filePath)
+
+def cleanedLoansDefDelinqReader(spark):
+    filePath = "../data/cleaned/loans_defaulter_delinq_parquet"
+    return spark.read.format("parquet").load(filePath)
+
+def cleanedLoansDefDetailReader(spark):
+    filePath = "../data/cleaned/loans_def_detail_records_enq_df_parquet"
+    return spark.read.format("parquet").load(filePath)
+

@@ -81,5 +81,8 @@ def cleanedLoansDefaultersDfWriter(loans_def_delinq_df,loans_def_records_enq_df,
         .mode("overwrite")\
         .save("../data/cleaned/loans_def_detail_records_enq_df_parquet")
     
-
-        
+def new_cleaned_writer(df,file_path):
+    df.write.format("parquet")\
+        .mode("overwrite")\
+        .option("path", file_path)\
+        .save()
